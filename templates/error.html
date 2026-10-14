@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block title %}Error {{ code }}{% endblock %}{% block heading %}{{ code }}{% endblock %}
+{% block content %}<div class="panel narrow"><h3>{{ message }}</h3><p class="muted">If you think this is a mistake, contact your school administrator.</p><a class="btn btn-primary" href="{{ url_for('dashboard') }}">Back to dashboard</a></div>{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<div class="welcome-row"><div><h3>Good to see you, {{ current_user.split(' ')[0] }}.</h3><p class="muted">Here is your school's operational snapshot for today.</p></div><span class="pill green">● System ready</span></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-top"><span>Active students</span><span class="stat-icon blue">♙</span></div><strong>{{ stats.students }}</strong><small>Current active enrollment</small></div>
+<div class="stat-card"><div class="stat-top"><span>Active teachers</span><span class="stat-icon purple">♧</span></div><strong>{{ stats.teachers }}</strong><small>Current active staff</small></div>
+<div class="stat-card"><div class="stat-top"><span>Fees collected this month</span><span class="stat-icon green">₹</span></div><strong>₹{{ "{:,.2f}".format(stats.fees) }}</strong><small>Recorded payments</small></div>
+<div class="stat-card"><div class="stat-top"><span>Expenses this month</span><span class="stat-icon orange">↗</span></div><strong>₹{{ "{:,.2f}".format(stats.expenses) }}</strong><small>Recorded expenses</small></div>
+</div>
+<div class="two-col">
+<div class="panel"><div class="panel-head"><div><h3>Recent fee payments</h3><p class="muted">Latest recorded receipts</p></div><a href="{{ url_for('fees') }}" class="text-link">View all →</a></div>
+{% if recent %}<div class="table-wrap"><table><thead><tr><th>Student</th><th>Receipt</th><th>Date</th><th class="right">Amount</th></tr></thead><tbody>{% for r in recent %}<tr><td><b>{{ r.student }}</b></td><td>{{ r.receipt_no }}</td><td>{{ r.paid_date }}</td><td class="right">₹{{ "{:,.2f}".format(r.amount) }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty"><span>₹</span><b>No fee payments yet</b><p>Once you record payments, recent receipts will appear here.</p></div>{% endif %}</div>
+<div class="panel"><div class="panel-head"><div><h3>Quick actions</h3><p class="muted">Common school workflows</p></div></div><div class="quick-grid">
+<a href="{{ url_for('students') }}"><span>♙</span><b>Students</b><small>Manage records</small></a>
+<a href="{{ url_for('attendance') }}"><span>◷</span><b>Attendance</b><small>Mark daily roll</small></a>
+{% if current_role in ['admin','accountant'] %}<a href="{{ url_for('fees') }}"><span>₹</span><b>Collect fees</b><small>Record payment</small></a><a href="{{ url_for('expenses') }}"><span>↗</span><b>Add expense</b><small>Record voucher</small></a>{% endif %}
+<a href="{{ url_for('exams') }}"><span>▤</span><b>Exams</b><small>Schedule dates</small></a>
+</div></div></div>
+<div class="notice"><span>✦</span><div><b>Starter build notice</b><p>This is a local prototype. Cloud hosting, automated recurring payments, parent logins, PDF report cards, and a signed Windows installer are planned integration tasks—not active services yet.</p></div></div>
+{% endblock %}

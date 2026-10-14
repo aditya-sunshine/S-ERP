@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}School ERP{% endblock %} · {{ school_name }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if current_user %}
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">S</div><div><strong>{{ school_name }}</strong><small>School ERP</small></div></div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">▦ Dashboard</a>
+    {% if current_role in ['admin','accountant','teacher'] %}<a href="{{ url_for('students') }}">♙ Students</a>{% endif %}
+    {% if current_role == 'admin' %}<a href="{{ url_for('teachers') }}">♧ Teachers</a>{% endif %}
+    {% if current_role in ['admin','teacher'] %}<a href="{{ url_for('attendance') }}">◷ Student attendance</a><a href="{{ url_for('teacher_attendance') }}">◷ Teacher attendance</a>{% endif %}
+    {% if current_role in ['admin','accountant'] %}<a href="{{ url_for('fees') }}">₹ Fee collection</a><a href="{{ url_for('expenses') }}">↗ Expenses</a>{% endif %}
+    {% if current_role in ['admin','teacher'] %}<a href="{{ url_for('exams') }}">▤ Examinations</a><a href="{{ url_for('results') }}">✓ Results</a>{% endif %}
+    {% if current_role in ['admin','accountant'] %}<a href="{{ url_for('reports') }}">▥ Reports</a>{% endif %}
+    {% if current_role == 'admin' %}<a href="{{ url_for('audit_page') }}">⌁ Audit log</a><a href="{{ url_for('settings') }}">⚙ Settings</a>{% endif %}
+  </nav>
+  <div class="sidebar-bottom"><span class="avatar">{{ current_user[:1]|upper }}</span><div class="user-meta"><b>{{ current_user }}</b><small>{{ current_role|capitalize }}</small></div><form method="post" action="{{ url_for('logout') }}"><button class="logout" title="Sign out">↪</button></form></div>
+</aside>
+{% endif %}
+<main class="{% if current_user %}main{% else %}main auth-main{% endif %}">
+  {% if current_user %}<header class="topbar"><div><span class="eyebrow">SCHOOL MANAGEMENT</span><h2>{% block heading %}Overview{% endblock %}</h2></div><div class="top-actions"><span class="date-chip">◷ {{ today }}</span><a class="btn btn-light" href="{{ url_for('change_password') }}">Change password</a></div></header>{% endif %}
+  <section class="content">
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category,message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+  {% block content %}{% endblock %}
+  <footer>School ERP · Starter build · Keep student and financial data confidential.</footer>
+  </section>
+</main>
+</body></html>
